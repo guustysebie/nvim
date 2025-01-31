@@ -68,7 +68,7 @@ vim.keymap.set("n", "<leader>pv", vim.cmd.Ex)
 
 
 -- Telescope config this is the thing for fuzzy finding
-if  package.loaded['telescope.builtin'] then
+--if  package.loaded['telescope.builtin'] then
     if require('telescope.builtin') ~= nil  then
         local builtin = require('telescope.builtin')
         vim.keymap.set('n', '<leader>ff', builtin.find_files, { desc = 'Telescope find files' })
@@ -76,7 +76,7 @@ if  package.loaded['telescope.builtin'] then
         vim.keymap.set('n', '<leader>fb', builtin.buffers, { desc = 'Telescope buffers' })
         vim.keymap.set('n', '<leader>fh', builtin.help_tags, { desc = 'Telescope help tags' })
     end
-end
+--end
 
 -- ============================== TERMINAL CONFIG =============================
 -- exit terminal

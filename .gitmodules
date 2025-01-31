@@ -1,3 +1,6 @@
 [submodule "pack/dist/start/plenary.nvim"]
 	path = pack/dist/start/plenary.nvim
 	url = git@github.com:nvim-lua/plenary.nvim.git
+[submodule "pack/dist/start/telescope.nvim"]
+	path = pack/dist/start/telescope.nvim
+	url = git@github.com:nvim-telescope/telescope.nvim.git
