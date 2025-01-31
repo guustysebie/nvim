@@ -68,17 +68,16 @@ vim.keymap.set("n", "<leader>pv", vim.cmd.Ex)
 
 
 -- Telescope config this is the thing for fuzzy finding
-if require('telescope.builtin') ~= nil  then
-    local builtin = require('telescope.builtin')
-    vim.keymap.set('n', '<leader>ff', builtin.find_files, { desc = 'Telescope find files' })
-    vim.keymap.set('n', '<leader>fg', builtin.live_grep, { desc = 'Telescope live grep' })
-    vim.keymap.set('n', '<leader>fb', builtin.buffers, { desc = 'Telescope buffers' })
-    vim.keymap.set('n', '<leader>fh', builtin.help_tags, { desc = 'Telescope help tags' })
+if  package.loaded['telescope.builtin'] then
+    if require('telescope.builtin') ~= nil  then
+        local builtin = require('telescope.builtin')
+        vim.keymap.set('n', '<leader>ff', builtin.find_files, { desc = 'Telescope find files' })
+        vim.keymap.set('n', '<leader>fg', builtin.live_grep, { desc = 'Telescope live grep' })
+        vim.keymap.set('n', '<leader>fb', builtin.buffers, { desc = 'Telescope buffers' })
+        vim.keymap.set('n', '<leader>fh', builtin.help_tags, { desc = 'Telescope help tags' })
+    end
 end
 
---if not package.loaded['telescope.builtin'] then
---    print("didn't loaded telescope")
---end
 -- ============================== TERMINAL CONFIG =============================
 -- exit terminal
 vim.api.nvim_set_keymap('t', '<leader>te', [[<C-\><C-n>]], { noremap = true, silent = true })
