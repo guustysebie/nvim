@@ -129,24 +129,6 @@ vim.api.nvim_create_autocmd('TextYankPost', {
     end
 })
 -- ===============================iText shortcuts=============
---local modules = {
---  "libgy",
---}
---
----- Refresh module cache
---for k, v in pairs(modules) do
---  package.loaded[v] = nil
---  require(v)
---end
---
---local is_ok, mymod = pcall(require, 'libgy')
---if is_ok then
---    local libgy = require('libgy')
---    vim.api.nvim_create_user_command("IText", libgy.get_branch_name , {})
---    vim.keymap.set("n", "<leader>tt", ":IText")
---else
---  print("Module had an error")
---end
 local function replace_pdf_files()
     -- Get the current buffer content
     local lines = vim.api.nvim_buf_get_lines(0, 0, -1, false)
