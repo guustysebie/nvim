@@ -35,7 +35,7 @@ vim.opt.backupdir = vim.fn.expand("~/.cache/vim") -- Directory for backup files
 
 --opens vsp to the right 
 vim.opt.splitright = true
-
+vim.opt.clipboard = "unnamedplus"
 
 vim.g.have_nerd_font = false
 
