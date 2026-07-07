@@ -49,6 +49,7 @@ vim.opt.ignorecase = true
 vim.opt.smartcase = true
 
 
+vim.keymap.set('n', 'q', ':q!<CR>', { noremap = true, silent = true })
 -- Sets how neovim will display certain whitespace characters in the editor.
 --  See `:help 'list'`
 --  and `:help 'listchars'`
@@ -114,7 +115,6 @@ vim.keymap.set("n", "<leader>ts", function()
     vim.cmd.wincmd("J")
     vim.api.nvim_win_set_height(0,10)
 end)
-
 -- ============================== Execute lua =============================
 vim.keymap.set("n", "<leader><leader>x", "<cmd>source %<CR>")
 vim.keymap.set("n", "<leader>x", ":.lua<CR>")
@@ -180,6 +180,16 @@ local function replace_pdf_files()
     print(string.format("PDF Replacement Summary: %d successful, %d failed", 
         successful_replacements, failed_replacements))
 end
+
+vim.api.nvim_create_autocmd("BufReadPost", {
+  callback = function()
+    if vim.bo.filetype == "" then
+      vim.cmd("AnsiEsc")
+    end
+  end,
+})
+
+
 
 -- Create a user command to call the function
 vim.api.nvim_create_user_command('ReplacePdfFiles', replace_pdf_files, {})
