@@ -181,16 +181,6 @@ local function replace_pdf_files()
         successful_replacements, failed_replacements))
 end
 
-vim.api.nvim_create_autocmd("BufReadPost", {
-  callback = function()
-    if vim.bo.filetype == "" then
-      vim.cmd("AnsiEsc")
-    end
-  end,
-})
-
-
-
 -- Create a user command to call the function
 vim.api.nvim_create_user_command('ReplacePdfFiles', replace_pdf_files, {})
 
