@@ -193,3 +193,6 @@ vim.api.nvim_create_autocmd("BufReadPost", {
 
 -- Create a user command to call the function
 vim.api.nvim_create_user_command('ReplacePdfFiles', replace_pdf_files, {})
+
+require("itext-pr-urls")
+
