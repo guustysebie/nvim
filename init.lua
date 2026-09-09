@@ -128,6 +128,17 @@ vim.api.nvim_create_autocmd('TextYankPost', {
         vim.highlight.on_yank()
     end
 })
+
+
+
+-- Automatically check if files changed when gaining focus or entering a buffer
+vim.opt.autoread = true
+vim.api.nvim_create_autocmd({ "FocusGained", "BufEnter", "CursorHold" }, {
+  pattern = "*",
+  command = "silent! checktime",
+})
+
+
 -- ===============================iText shortcuts=============
 local function replace_pdf_files()
     -- Get the current buffer content
@@ -195,6 +206,7 @@ local function to_command_name(name)
     end))
 end
 
+
 local generated_dir = vim.fn.stdpath('config') .. '/lua/generated'
 for _, file in ipairs(vim.fn.glob(generated_dir .. '/*.lua', false, true)) do
     local modname = vim.fn.fnamemodify(file, ':t:r')
@@ -204,12 +216,15 @@ for _, file in ipairs(vim.fn.glob(generated_dir .. '/*.lua', false, true)) do
     elseif type(mod) == 'table' then
         for name, fn in pairs(mod) do
             if type(fn) == 'function' then
-                _G[name] = fn
-                local cmd_ok, err = pcall(vim.api.nvim_create_user_command, to_command_name(name), function(o)
-                    fn(unpack(o.fargs))
-                end, { nargs = '*' })
-                if not cmd_ok then
-                    vim.notify('could not create command for ' .. name .. ': ' .. tostring(err), vim.log.levels.WARN)
+                if string.match(name, "^%u") then
+                    _G[name] = fn
+                    local cmd_ok, err = pcall(vim.api.nvim_create_user_command, to_command_name(name), function(o)
+                        fn(unpack(o.fargs))
+                    end, { nargs = '*' })
+                    if not cmd_ok then
+                        vim.notify('could not create command for ' .. name .. ': ' .. tostring(err), vim.log.levels.WARN)
+                    end
+                else 
                 end
             end
         end
