@@ -186,8 +186,15 @@ vim.api.nvim_create_user_command('ReplacePdfFiles', replace_pdf_files, {})
 
 -- =============================== Fennel generated functions =============
 -- Every function exported from lua/generated/*.lua becomes:
---   * a global   -> :lua hello("guust")
---   * a command  -> :Hello guust
+--   * a global   -> :lua hello("guust") / :lua hello_window()
+--   * a command  -> :Hello guust       / :HelloWindow
+-- (command names may only contain letters/digits, so foo_bar -> FooBar)
+local function to_command_name(name)
+    return (name:gsub('(%a)([%w]*)_?', function(first, rest)
+        return first:upper() .. rest
+    end))
+end
+
 local generated_dir = vim.fn.stdpath('config') .. '/lua/generated'
 for _, file in ipairs(vim.fn.glob(generated_dir .. '/*.lua', false, true)) do
     local modname = vim.fn.fnamemodify(file, ':t:r')
@@ -198,9 +205,12 @@ for _, file in ipairs(vim.fn.glob(generated_dir .. '/*.lua', false, true)) do
         for name, fn in pairs(mod) do
             if type(fn) == 'function' then
                 _G[name] = fn
-                vim.api.nvim_create_user_command(name:sub(1, 1):upper() .. name:sub(2), function(o)
+                local cmd_ok, err = pcall(vim.api.nvim_create_user_command, to_command_name(name), function(o)
                     fn(unpack(o.fargs))
                 end, { nargs = '*' })
+                if not cmd_ok then
+                    vim.notify('could not create command for ' .. name .. ': ' .. tostring(err), vim.log.levels.WARN)
+                end
             end
         end
     end
