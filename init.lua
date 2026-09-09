@@ -184,5 +184,24 @@ end
 -- Create a user command to call the function
 vim.api.nvim_create_user_command('ReplacePdfFiles', replace_pdf_files, {})
 
-require("itext-pr-urls")
-
+-- =============================== Fennel generated functions =============
+-- Every function exported from lua/generated/*.lua becomes:
+--   * a global   -> :lua hello("guust")
+--   * a command  -> :Hello guust
+local generated_dir = vim.fn.stdpath('config') .. '/lua/generated'
+for _, file in ipairs(vim.fn.glob(generated_dir .. '/*.lua', false, true)) do
+    local modname = vim.fn.fnamemodify(file, ':t:r')
+    local ok, mod = pcall(require, 'generated.' .. modname)
+    if not ok then
+        vim.notify('failed to load generated.' .. modname .. ': ' .. tostring(mod), vim.log.levels.WARN)
+    elseif type(mod) == 'table' then
+        for name, fn in pairs(mod) do
+            if type(fn) == 'function' then
+                _G[name] = fn
+                vim.api.nvim_create_user_command(name:sub(1, 1):upper() .. name:sub(2), function(o)
+                    fn(unpack(o.fargs))
+                end, { nargs = '*' })
+            end
+        end
+    end
+end
