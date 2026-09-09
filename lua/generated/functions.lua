@@ -45,12 +45,17 @@ local function fnl_compile_nvim(cont)
   return job_collect({"bash", "-c", "/home/guust/.config/nvim/compile-all.sh"}, _8_, "/home/guust/.config/nvim/")
 end
 local function lua_reload_config()
+  for mod, _ in pairs(package.loaded) do
+    if mod:match("^generated%.") then
+      package.loaded[mod] = nil
+    else
+    end
+  end
   local ok, err = nil, nil
-  local function _9_()
-    package.loaded["generated.functions"] = nil
+  local function _10_()
     return dofile(vim.env.MYVIMRC)
   end
-  ok, err = xpcall(_9_, debug.traceback)
+  ok, err = xpcall(_10_, debug.traceback)
   if ok then
     return vim.notify("Lua config reloaded", vim.log.levels.INFO)
   else

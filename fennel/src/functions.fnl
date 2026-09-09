@@ -39,10 +39,11 @@
   )
 (fn lua-reload-config []
   "Reload init.lua and report success/failure via notifications."
+  (each [mod _ (pairs package.loaded)]
+    (when (mod:match "^generated%.")
+      (tset package.loaded mod nil)))
   (let [(ok err) (xpcall
                    (fn []
-                     ;; force fresh load for this generated module before re-sourcing init
-                     (tset package.loaded "generated.functions" nil)
                      (dofile vim.env.MYVIMRC))
                    debug.traceback)]
     (if ok
