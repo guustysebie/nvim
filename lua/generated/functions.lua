@@ -1,8 +1,8 @@
 local _local_1_ = require("generated.print-util")
 local dump = _local_1_["dump"]
 local format_as_line = _local_1_["format-as-line"]
-local function hello(name)
-  return print("Hello this and that frank de tank!!!")
+_G.hello = function(name)
+  return print(("hello " .. name))
 end
 local function job_collect(cmd, on_done, cwd)
   local out = {}
@@ -65,8 +65,36 @@ end
 local function lua_compile_fnl_and_reload()
   return fnl_compile_nvim(lua_reload_config)
 end
+local fennel_repl_chan = nil
+local function fennel_repl_start()
+  vim.cmd.vnew()
+  vim.cmd.wincmd("J")
+  vim.api.nvim_win_set_height(0, 12)
+  local chan = vim.fn.termopen({"fennel", "--add-package-path", "./lua/?.lua", "--load", "./fennel/repl-init.fnl", "--repl"}, {cwd = "/home/guust/.config/nvim"})
+  if (chan > 0) then
+    fennel_repl_chan = chan
+    vim.cmd.startinsert()
+    return vim.notify("Fennel REPL started. Use :FennelReplReload to run (reload!).", vim.log.levels.INFO)
+  else
+    return vim.notify("Failed to start Fennel REPL", vim.log.levels.ERROR)
+  end
+end
+local function fennel_repl_reload()
+  if not fennel_repl_chan then
+    return vim.notify("No Fennel REPL channel. Start one with :FennelReplStart", vim.log.levels.WARN)
+  else
+    local state = vim.fn.jobwait({fennel_repl_chan}, 0)[1]
+    if (state == -1) then
+      vim.fn.chansend(fennel_repl_chan, "(reload!)\n")
+      return vim.notify("Sent (reload!) to Fennel REPL", vim.log.levels.INFO)
+    else
+      fennel_repl_chan = nil
+      return vim.notify("Fennel REPL is not running. Start one with :FennelReplStart", vim.log.levels.WARN)
+    end
+  end
+end
 local function test_format()
   local t = {"hello", "second"}
   return print(format_as_line(t))
 end
-return {Hello = hello, LuaCompileFnlAndReload = lua_compile_fnl_and_reload, TestFormat = test_format}
+return {Hello = hello, LuaCompileFnlAndReload = lua_compile_fnl_and_reload, FennelReplStart = fennel_repl_start, FennelReplReload = fennel_repl_reload, TestFormat = test_format}
